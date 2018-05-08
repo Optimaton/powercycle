@@ -1,55 +1,26 @@
 #ifndef __TIME_H__
 #define __TIME_H__
 
-/* TODO(raghu): populate the hh::mm::ss 
-   data immediately for both system time
-   and user provided time */
-struct Minutes {
- public:
-  explicit Minutes(int minutes);
-  void setMinutes(int minutes);
-  Minutes getMinutes();
- private:
-  int minutes_;
+enum class Wakeup {
+  IMMEDIATE = 1,
+  LATER_MIN = 2,
+  LATER_AT_TIME = 3,
 };
 
-struct Seconds {
- public:
-  explicit Seconds(int seconds);
-  void setSeconds(int seconds);
-  Seconds getSeconds();
- private:
-  int seconds_;
-};
-
-struct Hours {
- public:
-  explicit Hours(int hours);
-  void setHours(int hours);
-  Hours getHours();
- private:
-  int hours_;
-};
-
+const char SEPARATOR = ':';
 struct Time {
  public:
   // convert given h,m,s in hh::mm::ss
   // needs an argcheck too
-  explicit Time (
-                const Hours& hours,
-                const Minutes& minutes,
-                const Seconds& seconds
-                );
-  void setTime(
-              const Hours& hours,
-              const Minutes& minutes,
-              const Seconds& seconds
-              );
-  Time getTime();
+  explicit Time (char const* argTime, Wakeup Type);
+  uint32_t getTime();
  private:
-  Hours hours_;
-  Minutes minutes_;
-  Seconds seconds_;
+  void setHours(const uint32_t& hours);
+  void setMinutes(const uint32_t& minutes);
+  void setSeconds(const uint32_t& seconds);
+  uint32_t hours_;
+  uint32_t minutes_;
+  uint32_t seconds_;
 };
 
 #endif // __TIME_H__
