@@ -1,10 +1,10 @@
 #ifndef __UTIL_H__
-#define __UTIL_H__	
+#define __UTIL_H__  
 
 enum class Error {
   INVALID_ARG_COUNT,
   INVALID_ARG_TYPE,
-	UNSPECIFIED_POWERCYCLE_MODE,
+  UNSPECIFIED_POWERCYCLE_MODE,
 };
 
 namespace util {
