@@ -1,7 +1,7 @@
 #include <iostream>
-#include "../include/time.hpp"
-#include "../include/powercycle.hpp"
-#include "../include/util.hpp"
+#include "time.hpp"
+#include "powercycle.hpp"
+#include "util.hpp"
 
 int main(int argc, char** argv)
 {

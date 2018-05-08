@@ -3,12 +3,12 @@
 #include <sstream>
 #include <chrono>
 #include <ctime>
-#include "../include/time.hpp"
+#include "time.hpp"
 
 Time::Time(char const* argTime)
 {
   std::string sArgTime(argTime);
-  Wakeup&& wakeup = getWakeupTime(sArgTime);
+  Wakeup&& wakeup = getWakeupType(sArgTime);
   if (wakeup == Wakeup::IMMEDIATE)
     setImmediateTime();
   if (wakeup == Wakeup::LATER_MIN)
@@ -17,7 +17,7 @@ Time::Time(char const* argTime)
     setFormattedTime(sArgTime);
 }
 
-Wakeup Time::getWakeupType(std::string& sArgTime) 
+Wakeup Time::getWakeupType(const std::string& sArgTime) 
 {
   if (sArgTime == "now")
     return Wakeup::IMMEDIATE;
@@ -37,7 +37,7 @@ void Time::setTimeInMinutes(const std::string& sArgTime)
   wakeupTime_ = std::stoi(sArgTime);
 }
 
-void Time::setFormattedTime(std::string& sArgTime)
+void Time::setFormattedTime(const std::string& sArgTime)
 {
   std::stringstream splitStream(sArgTime);
   size_t separatorCount = 0;
@@ -52,24 +52,30 @@ void Time::setFormattedTime(std::string& sArgTime)
     else
       setSeconds(currentTimeItem);
   }
+  wakeupTime_ = convertToMinutes();
+}
 
+uint32_t Time::convertToMinutes()
+{
+  uint32_t hr, min, sec;
   time_t currTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-  struct tm* timeMembers = gmtime(&currTime);
+  struct tm* timeMembers = localtime(&currTime);
+  std::cout << timeMembers->tm_hour << std::endl;
   if (hours_ < timeMembers->tm_hour) {
-    handleError(Error::STALE_TIME);
+    handleError(TError::STALE_TIME);
   }
   else if (hours_ == timeMembers->tm_hour) {
     if (minutes_ < timeMembers->tm_min) {
-      handleError(Error::STALE_TIME);
+      handleError(TError::STALE_TIME);
     }
     else if (minutes_ == timeMembers->tm_min) {
       if (seconds_ < timeMembers->tm_sec) {
-        handleError(Error::STALE_TIME);
+        handleError(TError::STALE_TIME);
       }
       else {
         hr = 0;
         min = 0;
-        sec = seconds_ - timeMembers->tim_sec;
+        sec = seconds_ - timeMembers->tm_sec;
       }
     }
     else {
@@ -83,12 +89,11 @@ void Time::setFormattedTime(std::string& sArgTime)
     }  
   }
   else {
-    // TODO(raghu): 
     hr = timeMembers->tm_hour - hours_;
     min = (60 - timeMembers->tm_min) + minutes_;
     while (min > 60) {
       min = min - 60;
-      hour = hour + 1;
+      hr = hr + 1;
     }
     sec = (60 - timeMembers->tm_sec) + seconds_;
     while (sec > 60) {
@@ -96,6 +101,9 @@ void Time::setFormattedTime(std::string& sArgTime)
       min = min + 1;
     }
   }
+
+  /* convert to minutes */
+  return ((hr * 60) + min + (sec/60));
   
 }
 
@@ -119,9 +127,18 @@ uint32_t Time::getTime()
   /* get current time */
   auto currentTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
   std::cout << "Current Time " << ctime(&currentTime) << std::endl;
+  std::cout << "Wakeup Time " << wakeupTime_ << std::endl;
   return wakeupTime_;
 }
 
+/* handle generic error */
+void Time::handleError(const TError err)
+{
+  std::string errorMsg;
+  if (err == TError::STALE_TIME)
+    errorMsg = "Command Failed. Stale Time Provided.";
+  std::cout << errorMsg << std::endl;
+}
 
 
 
