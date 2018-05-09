@@ -1,0 +1,7 @@
+sudo: required
+language: cpp
+compiler: gcc
+script:
+  - mkdir build
+  - cd build
+  - cmake .. && make
