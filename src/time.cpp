@@ -3,6 +3,7 @@
 #include <sstream>
 #include <chrono>
 #include <ctime>
+#include <cstdint>
 #include "time.hpp"
 
 Time::Time(char const* argTime)
@@ -27,14 +28,19 @@ Wakeup Time::getWakeupType(const std::string& sArgTime)
     return Wakeup::LATER_MIN;
 }
 
+void Time::setWakeupTime(uint32_t wakeupTime) 
+{
+  wakeupTime_ = wakeupTime;
+}
+
 void Time::setImmediateTime()
 {
-  wakeupTime_ = 0;
+  setWakeupTime(0);
 }
 
 void Time::setTimeInMinutes(const std::string& sArgTime) 
 {
-  wakeupTime_ = std::stoi(sArgTime);
+  setWakeupTime(std::stoi(sArgTime));
 }
 
 void Time::setFormattedTime(const std::string& sArgTime)
@@ -52,59 +58,22 @@ void Time::setFormattedTime(const std::string& sArgTime)
     else
       setSeconds(currentTimeItem);
   }
-  wakeupTime_ = convertToMinutes();
+  convertToMinutes();
 }
 
-uint32_t Time::convertToMinutes()
+void Time::convertToMinutes()
 {
   uint32_t hr, min, sec;
   time_t currTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
   struct tm* timeMembers = localtime(&currTime);
   std::cout << timeMembers->tm_hour << std::endl;
-  if (hours_ < timeMembers->tm_hour) {
+  long systemTime = (timeMembers->tm_hour * 3600) + (timeMembers->tm_min * 60) + timeMembers->tm_sec; /* in seconds */
+  long alarmTime = (hours_ * 3600) + (minutes_ * 60) + seconds_; /* in seconds */
+  std::cout << alarmTime - systemTime << std::endl;
+  if ((alarmTime - systemTime) < 0)
     handleError(TError::STALE_TIME);
-  }
-  else if (hours_ == timeMembers->tm_hour) {
-    if (minutes_ < timeMembers->tm_min) {
-      handleError(TError::STALE_TIME);
-    }
-    else if (minutes_ == timeMembers->tm_min) {
-      if (seconds_ < timeMembers->tm_sec) {
-        handleError(TError::STALE_TIME);
-      }
-      else {
-        hr = 0;
-        min = 0;
-        sec = seconds_ - timeMembers->tm_sec;
-      }
-    }
-    else {
-      hr = 0;
-      min = minutes_ - timeMembers->tm_min; 
-      sec = (60 - timeMembers->tm_sec) + seconds_;
-      while (sec > 60) {
-        sec = sec - 60;
-        min = min + 1;
-      }
-    }  
-  }
-  else {
-    hr = timeMembers->tm_hour - hours_;
-    min = (60 - timeMembers->tm_min) + minutes_;
-    while (min > 60) {
-      min = min - 60;
-      hr = hr + 1;
-    }
-    sec = (60 - timeMembers->tm_sec) + seconds_;
-    while (sec > 60) {
-      sec = sec - 60;
-      min = min + 1;
-    }
-  }
-
-  /* convert to minutes */
-  return ((hr * 60) + min + (sec/60));
-  
+  else
+    setWakeupTime((alarmTime - systemTime)/60);
 }
 
 void Time::setHours(const uint32_t& hours) 
@@ -122,12 +91,9 @@ void Time::setSeconds(const uint32_t& seconds)
   seconds_ = seconds;
 }
 
-uint32_t Time::getTime() 
+uint32_t Time::getWakeupTime() 
 {
   /* get current time */
-  auto currentTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-  std::cout << "Current Time " << ctime(&currentTime) << std::endl;
-  std::cout << "Wakeup Time " << wakeupTime_ << std::endl;
   return wakeupTime_;
 }
 
@@ -138,6 +104,7 @@ void Time::handleError(const TError err)
   if (err == TError::STALE_TIME)
     errorMsg = "Command Failed. Stale Time Provided.";
   std::cout << errorMsg << std::endl;
+  std::exit(EXIT_FAILURE);
 }
 
 

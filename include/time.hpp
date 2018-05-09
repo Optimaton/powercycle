@@ -17,13 +17,14 @@ struct Time {
   // convert given h,m,s in hh::mm::ss
   // needs an argcheck too
   explicit Time (char const* argTime);
-  uint32_t getTime();
+  uint32_t getWakeupTime();
  private:
   Wakeup getWakeupType(const std::string& sArgTime);
+  void setWakeupTime(uint32_t wakeupTime);
   void setImmediateTime();
   void setTimeInMinutes(const std::string& sArgTime);
   void setFormattedTime(const std::string& sArgTime);
-  uint32_t convertToMinutes();
+  void convertToMinutes();
   void setHours(const uint32_t& hours);
   void setMinutes(const uint32_t& minutes);
   void setSeconds(const uint32_t& seconds);

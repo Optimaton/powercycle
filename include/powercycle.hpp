@@ -3,14 +3,10 @@
 
 struct Powercycle {
  public:
-  /* convert into minutes and use it as rtc
-   * takes in only minutes 
-   */
-  explicit Powercycle(const Time& time);
-  void setAlarm();
+  explicit Powercycle(const uint32_t& wakeupTime);
  private:
-  Time wakeupTime_;
-  // Minutes wakeupMinutes_;
+  void execute();
+  uint32_t wakeupTime_;
 }; 
 
 #endif // __POWERCYCLE_H__

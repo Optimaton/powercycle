@@ -109,6 +109,8 @@ void handleError(const Error&& err)
   if (err == Error::UNSPECIFIED_POWERCYCLE_MODE)
     errorMsg = "Command Failed. Unspecified Powercycle Mode.";
   std::cout << errorMsg << std::endl;
+  callUsage();
+  std::exit(EXIT_FAILURE);
 }
 
 /* show appropriate usage format */
