@@ -1,3 +1,0 @@
-/home/sraghu/powercycle-mgr/build/CMakeFiles/rebuild_cache.dir
-/home/sraghu/powercycle-mgr/build/CMakeFiles/edit_cache.dir
-/home/sraghu/powercycle-mgr/build/CMakeFiles/powercycle.dir
