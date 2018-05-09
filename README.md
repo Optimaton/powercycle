@@ -1,6 +1,6 @@
 # powercycle-mgr
 A command-line util to manage power-cycle. works only on linux.
-[For window, there are other programs that you could use]
+
 
 >  ## Usage: 
 >   `powercycle [hh:mm:ss | now | timeleft(in minutes)]`
