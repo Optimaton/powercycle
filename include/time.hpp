@@ -7,11 +7,22 @@ enum class Wakeup {
   LATER_AT_TIME = 3,
 };
 
+enum class Separator {
+  HOUR = 1,
+  MIN = 2,
+  SEC = 3,
+};
+
 enum class TError {
   STALE_TIME
 };
 
+/* conversion parameters */
 const char SEPARATOR = ':';
+const uint16_t HR_SEC = 3600;
+const uint8_t MIN_SEC = 60;
+const uint8_t SEC_MIN = 60;
+
 struct Time {
  public:
   // convert given h,m,s in hh::mm::ss

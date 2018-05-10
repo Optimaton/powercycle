@@ -22,7 +22,7 @@ Wakeup Time::getWakeupType(const std::string& sArgTime)
 {
   if (sArgTime == "now")
     return Wakeup::IMMEDIATE;
-  else if (sArgTime.find(':') != std::string::npos)
+  else if (sArgTime.find(SEPARATOR) != std::string::npos)
     return Wakeup::LATER_AT_TIME;
   else 
     return Wakeup::LATER_MIN;
@@ -51,9 +51,9 @@ void Time::setFormattedTime(const std::string& sArgTime)
   while (std::getline (splitStream, timeItem, SEPARATOR)) {
     separatorCount++;
     uint32_t currentTimeItem = std::stoi(timeItem);
-    if (separatorCount == 1)
+    if (separatorCount == static_cast<size_t>(Separator::HOUR))
       setHours(currentTimeItem);
-    else if (separatorCount == 2)
+    else if (separatorCount == static_cast<size_t>(Separator::MIN))
       setMinutes(currentTimeItem);
     else
       setSeconds(currentTimeItem);
@@ -67,13 +67,13 @@ void Time::convertToMinutes()
   time_t currTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
   struct tm* timeMembers = localtime(&currTime);
   std::cout << timeMembers->tm_hour << std::endl;
-  long systemTime = (timeMembers->tm_hour * 3600) + (timeMembers->tm_min * 60) + timeMembers->tm_sec; /* in seconds */
-  long alarmTime = (hours_ * 3600) + (minutes_ * 60) + seconds_; /* in seconds */
+  long systemTime = (timeMembers->tm_hour * HR_SEC) + (timeMembers->tm_min * MIN_SEC) + timeMembers->tm_sec; /* in seconds */
+  long alarmTime = (hours_ * HR_SEC) + (minutes_ * MIN_SEC) + seconds_; /* in seconds */
   std::cout << alarmTime - systemTime << std::endl;
   if ((alarmTime - systemTime) < 0)
     handleError(TError::STALE_TIME);
   else
-    setWakeupTime((alarmTime - systemTime)/60);
+    setWakeupTime((alarmTime - systemTime)/SEC_MIN);
 }
 
 void Time::setHours(const uint32_t& hours) 

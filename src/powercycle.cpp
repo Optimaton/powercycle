@@ -2,6 +2,9 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include <chrono>
+#include <ctime>
+#include <fstream>
 #include "powercycle.hpp"
 
 Powercycle::Powercycle(const uint32_t& wakeupTime) : 
@@ -12,9 +15,22 @@ Powercycle::Powercycle(const uint32_t& wakeupTime) :
 
 void Powercycle::execute()
 {   
-    std::system("sh -c \"echo 0 > /sys/class/rtc/rtc0/wakealarm\"");
-    std::string invokeRtc = std::string("sh -c \"echo `date '+%s' -d '+ ") + std::to_string(wakeupTime_) +" minutes'` > /sys/class/rtc/rtc0/wakealarm\"";
-    std::system(invokeRtc.c_str());
-    std::system("shutdown -h now");
+  invokeRTC();
+  shutdown();    
+}
+
+void Powercycle::invokeRTC()
+{
+  time_t currentTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+  std::ofstream rtcStream;
+  rtcStream.open("/sys/class/rtc/rtc0/wakealarm");
+  rtcStream << time(&currentTime) + (wakeupTime_ * SECONDS);
+  rtcStream.close();
+}
+
+/* shuts down system by forking a shell and executing shutdown command */
+void Powercycle::shutdown()
+{ 
+  std::system("shutdown -h now");
 }
 
