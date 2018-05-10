@@ -1,6 +1,6 @@
-# powercycle-mgr
-A command-line util to manage power-cycle. works only on linux.
-
+[![Build Status](https://travis-ci.org/raghu-veer/powercycle-mgr.svg?branch=master)](https://travis-ci.org/raghu-veer/powercycle-mgr)
+# powercycle
+A command-line util to manage powercycle.
 
 >  ## Usage: 
 >   `powercycle [hh:mm:ss | now | timeleft(in minutes)]`
