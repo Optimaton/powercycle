@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/raghu-veer/powercycle-mgr.svg?branch=master)](https://travis-ci.org/raghu-veer/powercycle-mgr)
+[![Build Status](https://travis-ci.org/raghu-veer/powercycle.svg?branch=master)](https://travis-ci.org/raghu-veer/powercycle)
 # powercycle
 A command-line util to manage powercycle.
 
