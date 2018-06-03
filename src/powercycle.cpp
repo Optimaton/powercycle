@@ -30,7 +30,7 @@ void Powercycle::invokeRTC()
   rtcStream.close();
 }
 
-/* shuts down system by forking a shell and executing shutdown command */
+/* using reboot(2) to shutdown immediately, see man reboot(2) */
 void Powercycle::shutdown()
 { 
   reboot(RB_POWER_OFF);
