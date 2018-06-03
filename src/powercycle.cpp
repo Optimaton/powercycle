@@ -5,6 +5,8 @@
 #include <chrono>
 #include <ctime>
 #include <fstream>
+#include <unistd.h>
+#include <sys/reboot.h>
 #include "powercycle.hpp"
 
 Powercycle::Powercycle(const uint32_t& wakeupTime) : 
@@ -31,6 +33,6 @@ void Powercycle::invokeRTC()
 /* shuts down system by forking a shell and executing shutdown command */
 void Powercycle::shutdown()
 { 
-  std::system("shutdown -h now");
+  reboot(RB_POWER_OFF);
 }
 
