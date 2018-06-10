@@ -2,6 +2,7 @@
 #define __POWERCYCLE_H__
 
 const uint8_t SECONDS = 60;
+const std::string RTC_WAKEALARM = "/sys/class/rtc/rtc0/wakealarm";
 
 struct Powercycle {
  public:

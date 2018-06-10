@@ -25,7 +25,7 @@ void Powercycle::invokeRTC()
 {
   time_t currentTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
   std::ofstream rtcStream;
-  rtcStream.open("/sys/class/rtc/rtc0/wakealarm");
+  rtcStream.open(RTC_WAKEALARM);
   rtcStream << time(&currentTime) + (wakeupTime_ * SECONDS);
   rtcStream.close();
 }
