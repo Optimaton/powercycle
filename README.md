@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/raghu-veer/powercycle.svg?branch=master)](https://travis-ci.org/raghu-veer/powercycle)
+[![Build Status](https://travis-ci.org/Optimaton/powercycle.svg?branch=master)](https://travis-ci.org/Optimaton/powercycle)
 # powercycle
 A command-line util to manage powercycle.
 
